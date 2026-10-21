@@ -2,7 +2,7 @@ import sqlite3
 
 from bottle import get, post, redirect, request, route, run, template
 
-DB_NAME = 'meu_banco_de_dados2.db'
+DB_NAME = 'clientes.db'
  
 def inicializar_banco():
     """Garante a existência da tabela 'clientes' no banco SQLite."""
@@ -24,7 +24,7 @@ def inicializar_banco():
 def index():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT id, nome, email FROM clientes;")
+    cursor.execute("SELECT id, nome, email, telefone FROM clientes;")
     clientes = cursor.fetchall()
     conn.close()
  
@@ -35,11 +35,12 @@ def index():
 def cadastrar():
     nome = request.forms.get('nome')
     email = request.forms.get('email')
+    telefone = request.forms.get('telefone')
  
     if nome and email:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO clientes (nome, email) VALUES (?, ?);", (nome, email))
+        cursor.execute("INSERT INTO clientes (nome, email, telefone) VALUES (?, ?, ?);", (nome, email, telefone))
         conn.commit()
         conn.close()
  
@@ -50,61 +51,30 @@ def cadastrar():
 def exibir_formulario_edicao(id):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT id, nome, email FROM clientes WHERE id = ?;", (id,))
+    cursor.execute("SELECT id, nome, email, telefone FROM clientes WHERE id = ?;", (id,))
     cliente = cursor.fetchone()
     conn.close()
  
     if not cliente:
-        print(f'O id informado não existe: {id}')
+        #print(f'O id informado não existe: {id}')
         redirect('/')
  
-    html_editar = '''
-        <!DOCTYPE html>
-        <html lang="pt-br">
-        <head>
-            <meta charset="UTF-8">
-            <title>Editar Cliente</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 30px; }
-                h1 { color: #333; }
-                form { background: #f4f4f4; padding: 15px; border-radius: 5px; width: 300px; }
-                input { margin-bottom: 10px; padding: 8px; width: 90%; display: block; }
-                input[type="submit"] { background: #007bff; color: white; border: none; cursor: pointer; width: 100px; }
-                a { color: #6c757d; text-decoration: none; display: inline-block; margin-top: 10px; }
-            </style>
-        </head>
-        <body>
-            <h1>Editar Cliente #{{cliente[1]}}</h1>
-            
-            <form action="/editar/{{cliente[0]}}" method="post">
-                <label>Nome:</label>
-                <input type="text" name="nome" value="{{cliente[1]}}" required>
-                
-                <label>E-mail:</label>
-                <input type="email" name="email" value="{{cliente[2]}}" required>
-                
-                <input type="submit" value="Salvar">
-            </form>
- 
-            <a href="/">← Cancelar e Voltar</a>
-        </body>
-        </html>
-    '''
-    return template(html_editar, cliente=cliente)
+    return template('form_editar', cliente=cliente)
  
 # 4. ROTA DE EDIÇÃO - SALVAR ALTERAÇÕES (POST)
 @post('/editar/<id:int>')
 def salvar_edicao(id):
     nome = request.forms.get('nome')
     email = request.forms.get('email')
+    telefone = request.forms.get('telefone')
  
     if nome and email:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         # Atualiza os dados com a instrução SQL UPDATE usando parâmetros seguros
         cursor.execute(
-            "UPDATE clientes SET nome = ?, email = ? WHERE id = ?;",
-            (nome, email, id)
+            "UPDATE clientes SET nome = ?, email = ?, telefone = ? WHERE id = ?;",
+            (nome, email, telefone, id)
         )
         conn.commit()
         conn.close()

@@ -25,6 +25,8 @@
                 
                 <label>E-mail:</label>
                 <input type="email" name="email" required placeholder="exemplo@email.com">
+                <label>Telefone:</label>
+                <input type="text" name="telefone" required placeholder="(88)9988-1234">
                 
                 <input type="submit" value="Cadastrar">
             </form>
@@ -35,13 +37,15 @@
                     <th>ID</th>
                     <th>Nome</th>
                     <th>E-mail</th>
+                    <th>Telefone</th>
                     <th>Ações</th>
                 </tr>
-                % for id_, nome, email in lista_clientes:
+                % for id_, nome, email, telefone in lista_clientes:
                 <tr>
                     <td>{{id_}}</td>
                     <td>{{nome}}</td>
                     <td>{{email}}</td>
+                    <td>{{telefone}}</td>
                     <td>
                         <a class="btn-edit" href="/editar/{{id_}}">Editar</a>
                         <a class="btn-del" href="/deletar/{{id_}}">Excluir</a>
