@@ -1,3 +1,4 @@
+"""APP versão inicial manipulando Banco de Dados"""
 import sqlite3
 
 

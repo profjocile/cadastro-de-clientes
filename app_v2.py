@@ -1,3 +1,4 @@
+"""App versão 2 usando Front End Web com Bottle.py"""
 import sqlite3
 
 from bottle import get, post, redirect, request, route, run, template

@@ -1,3 +1,4 @@
+"""App versão 3 adicionando funcionalide editar cadastro"""
 import sqlite3
 
 from bottle import get, post, redirect, request, route, run, template
